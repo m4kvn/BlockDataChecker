@@ -1,0 +1,59 @@
+buildscript {
+    ext.kotlin_version = '1.0.6'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+group = 'com.MasahiroSaito.Spigot'
+version = '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+}
+
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
+dependencies {
+    compile 'org.spigotmc:spigot-api:1.10.2-R0.1-SNAPSHOT'
+    embed "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+
+jar {
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
+    }
+}

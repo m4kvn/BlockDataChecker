@@ -1,0 +1,11 @@
+name: BlockDataChecker
+version: @version@
+main: com.masahirosaito.spigot.blockdatachecker.BlockDataChecker
+prefix: BlockDataChecker
+authors: [MasahiroSaito]
+description: This plugin has the function of showing the clicked block data.
+website: https://github.com/MasahiroSaito/BlockDataChecker
+commands:
+  bdc:
+    description: Switching BlockDataChecker Command
+    usage: /bdc

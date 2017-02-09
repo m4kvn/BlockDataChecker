@@ -13,9 +13,12 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
 group = 'com.MasahiroSaito.Spigot'
-version = '1.0-SNAPSHOT'
+version = '1.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -55,5 +58,39 @@ import org.apache.tools.ant.filters.ReplaceTokens
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         filter ReplaceTokens, tokens: [version: version]
+    }
+}
+
+task sourceJar(type : Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourceJar {
+                classifier = 'sources'
+                extension  = 'jar'
+            }
+        }
+    }
+}
+
+bintray {
+    user = project.hasProperty("bintrayUser") ? bintrayUser : ""
+    key = project.hasProperty("bintrayKey") ? bintrayKey : ""
+    publications = ['mavenJava']
+    publish = true
+    pkg {
+        repo = 'spigot-plugin-support'
+        name = 'BlockDataChecker'
+        userOrg = 'masahirosaito-repo'
+        websiteUrl = 'https://github.com/MasahiroSaito/BlockDataChecker'
+        issueTrackerUrl = 'https://github.com/MasahiroSaito/BlockDataChecker/issues'
+        licenses = ['Apache-2.0']
+        publicDownloadNumbers = true
+        githubRepo = 'MasahiroSaito/BlockDataChecker'
+        githubReleaseNotesFile = 'README.md'
     }
 }
